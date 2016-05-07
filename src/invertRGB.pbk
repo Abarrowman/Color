@@ -1,0 +1,19 @@
+<languageVersion : 1.0;>
+
+kernel OneColor
+<   namespace : "One Color";
+    vendor : "Abarrow.ca";
+    version : 1;
+    description : "Inverts color.";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+    
+    void
+    evaluatePixel()
+    {
+        float4 col=sampleNearest(src,outCoord());
+        dst = float4(1.0 - col.r, 1.0 - col.g, 1.0 - col.b, 1.0);
+    }
+}

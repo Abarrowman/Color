@@ -1,0 +1,29 @@
+<languageVersion : 1.0;>
+
+kernel OneColor
+<   namespace : "One Color";
+    vendor : "Abarrow.ca";
+    version : 1;
+    description : "Renders transparent and invisible all of the image but one color.";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+    
+    parameter float4 color
+    <
+        minValue:float4(0.0, 0.0, 0.0, 0.0);
+        maxValue:float4(1.0, 1.0, 1.0, 1.0);
+        defaultValue:float4(0.0, 0.0, 0.0, 1.0);
+    >;
+
+    void
+    evaluatePixel()
+    {
+        float4 col=sampleNearest(src,outCoord());
+        if(abs(color.r-col.r)+abs(color.g-col.g)+abs(color.b-col.b)+abs(col.a-color.a)>0.1){
+            col=float4(0.0, 0.0, 0.0, 0.0);
+        }
+        dst = col;
+    }
+}

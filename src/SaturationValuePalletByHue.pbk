@@ -1,0 +1,77 @@
+<languageVersion : 1.0;>
+
+kernel NewFilter
+<   namespace : "Your Namespace";
+    vendor : "Your Vendor";
+    version : 1;
+    description : "your description";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+    
+    parameter float hue
+    <
+        minValue:0.0;
+        maxValue:1.0;
+        defaultValue:0.0;
+    >;
+    
+    void
+    evaluatePixel()
+    {
+        float2 cord=outCoord();
+        if(cord.x<257.0&&cord.y<257.0&&cord.x>0.0&&cord.y>0.0){
+            float h=hue*360.0;
+            h/=60.0;
+            int i=int(floor(h));
+            if(i==6){
+                h=0.0;
+                i=0;
+            }
+            float x=cord.x-1.0;
+            float y=cord.y-1.0;
+            float f=h-float(i);
+            float s=x/255.0;
+            float v=1.0-(y/255.0);
+            float r,g,b,p,q,t;
+            if (s<1.0/255.0) {
+                //grey
+                r=g=b=v;
+            } else {
+                p = v * ( 1.0 - s );
+                q = v * ( 1.0 - s * f );
+                t = v * ( 1.0 - s * ( 1.0 - f ) );
+                if(i==0){
+                    r=v;
+                    g=t;
+                    b=p;
+                }else if(i==1){
+                    r=q;
+                    g=v;
+                    b=p;
+                }else if(i==2){
+                    r=p;
+                    g=v;
+                    b=t;
+                }else if(i==3){
+                    r=p;
+                    g=q;
+                    b=v;
+                }else if(i==4){
+                    r=t;
+                    g=p;
+                    b=v;
+                }else if(i==5){
+                    r=v;
+                    g=p;
+                    b=q;
+                }
+            }
+            dst = sampleNearest(src, cord); //causes a side effect that allows flash to use this shader
+            dst = float4(r,g,b,1.0);
+        }else{
+            dst = float4(0.0,0.0,0.0,0.0);
+        }
+    }
+}

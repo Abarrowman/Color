@@ -1,0 +1,29 @@
+<languageVersion : 1.0;>
+
+kernel NewFilter
+<   namespace : "Bulb";
+    vendor : "Abarrow.ca";
+    version : 1;
+    description : "";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+    parameter float pixelsize
+    <
+        minValue:float(1);
+        maxValue:float(50);
+        defaultValue:float(1);
+    >;
+    void
+    evaluatePixel()
+    {
+        float2 cord=outCoord();
+        float cx=cord.x;
+        float ex=floor(cx/pixelsize);
+        float cy=cord.y;
+        float ey=floor(cy/pixelsize);
+        float4 col=sampleNearest(src,float2(ex*pixelsize,ey*pixelsize));
+        dst = col;
+    }
+}

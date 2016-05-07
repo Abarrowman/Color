@@ -1,0 +1,31 @@
+<languageVersion : 1.0;>
+
+kernel NewFilter
+<   namespace : "Your Namespace";
+    vendor : "Your Vendor";
+    version : 1;
+    description : "your description";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+    
+    /*parameter float parm
+    <
+        minValue:0.0;
+        maxValue:1.0;
+        defaultValue:0.0;
+    >;*/
+    
+    void
+    evaluatePixel()
+    {
+        float2 cord = outCoord();
+        float4 inp = sampleNearest(src, cord);
+        if(cord.x<257.0&&cord.y<257.0&&cord.x>0.0&&cord.y>0.0){
+            dst = inp;//float4(1.0,1.0,1.0,1.0);
+        }else{
+            dst = float4(0.0,0.0,0.0,0.0);
+        }
+    }
+}

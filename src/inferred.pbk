@@ -1,0 +1,33 @@
+<languageVersion: 1.0;>
+
+kernel invertRGB
+<   namespace : "Thermal";
+    vendor : "Abarrow Co.";
+    version : 1;
+    description : "Creates an inferred vision effect."; >
+{
+    input image4 src;
+    output float4 dst;
+    
+    void
+    evaluatePixel()
+    {
+        // Obtain the input pixel color
+        float4 inputColor = sampleNearest(src, outCoord());
+        float r=inputColor.r;
+        float g=inputColor.g;
+        float b=inputColor.b;
+        float bright=(r+g+b)/3.0;
+        float bf=1.0-bright*2.0;
+        float rf=bright*2.0;
+        float gf=0.0;
+        if(bright>0.5){
+            bf=0.0;
+            rf=1.0;
+            gf=(bright-0.5)*2.0;
+        }
+        dst.rgb=float3(rf,gf,bf);
+        dst.a = inputColor.a;
+    }
+}
+
